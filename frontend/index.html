@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Test Frontend</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Include Marked.js library for Markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Include DOMPurify to sanitize HTML output from Marked (Security) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.4/purify.min.js"></script>
+</head>
+<body>
+    <div class="chat-container">
+        <h1>Chatbot Test</h1>
+        <div class="session-info">
+            Session ID: <span id="session-id">Loading...</span>
+            <button id="clear-history-btn">Clear History</button>
+        </div>
+        <div id="chatbox" class="chatbox">
+            <!-- Messages will appear here -->
+        </div>
+        <div id="input-area" class="input-area">
+            <input type="text" id="message-input" placeholder="Type your message...">
+            <button id="send-btn">Send</button>
+        </div>
+        <div id="loading-indicator" class="loading-indicator" style="display: none;">
+            Bot is thinking...
+        </div>
+        <div id="error-message" class="error-message" style="display: none;"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

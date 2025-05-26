@@ -1,0 +1,14 @@
+"""{intent_system_message}
+
+### Instruções para Geração da Resposta ###
+Analise a Pergunta do Usuário e use das categoria a seguir para determinar a intenção do usuário.
+A sua resposta deve ser muito breve e direta, apenas com a categoria de intenção do usuário.
+
+### Categorias de Perguntas do Usuário ###
+{intent_categories}
+
+### Pergunta do Usuário ###
+{question}
+
+### Resposta do Classificador de Intenções ###
+"""
