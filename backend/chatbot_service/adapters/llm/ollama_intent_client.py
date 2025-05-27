@@ -15,13 +15,15 @@ class OllamaIntentClient(IntentPort):
     An adapter implementation of the IntentPort using Langchain with an Ollama LLM
     for intent classification.
 
-    Handles loading the intent prompt template, initializing the LLM, and constructing
-    a runnable chain for classifying user queries.
+    Handles loading the intent prompt template (which is expected to contain
+    the system message and the list of categories internally), initializing the LLM,
+    and constructing a runnable chain for classifying user queries.
     """
     def __init__(self):
         """
         Initializes the Ollama LLM client for intent classification,
         loads the prompt template, and sets up the Langchain Expression Language (LCEL) chain.
+        The prompt template file itself is expected to define the categories.
         """
         try:
             template_file_path: Path = settings.intent_template_file_path
@@ -47,28 +49,26 @@ class OllamaIntentClient(IntentPort):
             logger.info(f"Initialized OllamaLLM for Intent Classification with model: {settings.ollama_intent_model} at base URL: {settings.ollama_base_url}")
 
             # --- Create PromptTemplate using the loaded string ---
+            # Based on your provided code, input_variables is just ["question"].
+            # This implies your intent_prompt_template.txt handles system message and categories internally.
             self.prompt_template = PromptTemplate(
-                input_variables=["intent_system_message", "intent_categories", "question"],
+                input_variables=["question"],
                 template=loaded_template_string
             )
 
             # --- Define the Chain using LCEL ---
-            # This defines the flow of data into the prompt template and then to the LLM
+            # This defines the flow of data into the prompt template and then to the LLM.
+            # Only "question" is passed to the prompt template.
             self.chain = (
-                {
-                    "question": operator.itemgetter("question"),
-                    "intent_system_message": lambda x: settings.intent_system_message,
-                    "intent_categories": lambda x: settings.intent_categories
-                }
+                {"question": operator.itemgetter("question")}
                 | self.prompt_template
                 | self.llm
                 | StrOutputParser()
             )
             logger.info("LCEL chain for intent classification constructed successfully.")
 
-            self._valid_intent_categories = [cat.strip() for cat in settings.intent_categories.split(',')]
-            logger.debug(f"Loaded intent categories for validation: {self._valid_intent_categories}")
-
+            # Removed: self._valid_intent_categories and its loading,
+            # as categories are now internal to the prompt file and not validated in Python.
 
         except Exception as e:
             logger.exception("Failed to initialize OllamaIntentClient")
@@ -82,31 +82,31 @@ class OllamaIntentClient(IntentPort):
             query: The user's current question.
 
         Returns:
-            The classified intent string. Returns a default intent if classification fails
-            or if the classified intent is not in the predefined list.
+            The classified intent string as returned by the LLM (stripped of whitespace).
+            Returns a default intent if an error occurs during LLM invocation.
 
         Raises:
-            InfrastructureException: If a critical error occurs during LLM invocation.
+            InfrastructureException: If a critical error occurs during LLM invocation that isn't handled by fallback.
         """
         try:
             # Prepare the input dictionary for the chain invocation
             chain_input = {"question": query}
-            logger.debug(f"Invoking intent classification chain with input keys: {list(chain_input.keys())}")
+            logger.debug(f"Invoking intent classification chain with input: {chain_input}")
 
             raw_response = await self.chain.ainvoke(chain_input)
             logger.debug(f"Raw intent classification response: '{raw_response}'")
 
+            # Basic cleaning: strip whitespace
             classified_intent = raw_response.strip()
 
-            # Validate if the response is one of the known categories
-            if classified_intent not in self._valid_intent_categories:
+            if not classified_intent:
                 logger.warning(
-                    f"LLM returned an intent ('{classified_intent}') not in predefined categories. "
-                    f"Query: '{query[:70]}...'. Defaulting to '{settings.default_intent}'."
+                    f"LLM returned an empty intent for query: '{query[:70]}...'. "
+                    f"Defaulting to '{settings.default_intent}'."
                 )
-                return settings.default_intent # Return a default intent
+                return settings.default_intent
 
-            logger.info(f"Successfully classified intent for query '{query[:50]}...' as '{classified_intent}'")
+            logger.info(f"Classified intent for query '{query[:50]}...' as '{classified_intent}'")
             return classified_intent
 
         except Exception as e:

@@ -93,13 +93,15 @@ async def check_chatbot_e2e(
     test_query = "Startup Check: Respond with 'OK'"
     test_context = "This is a system startup test."
     test_history = ""
+    test_intent = "Test"
 
     logger.debug("Performing E2E check: Sending test query to LLM...")
     try:
         response = await llm_client.generate_response(
             query=test_query,
             context=test_context,
-            chat_history=test_history
+            chat_history=test_history,
+            intent=test_intent
         )
 
         if not response or not isinstance(response, str):
@@ -107,46 +109,15 @@ async def check_chatbot_e2e(
 
         logger.debug(f"E2E check: LLM response received: '{response[:100]}...'")
 
-        # Basic validation: Check if response seems reasonable (adjust as needed)
         if "error" in response.lower() or len(response) < 1:
              logger.warning(f"E2E check warning: LLM response might indicate an issue: {response}")
-             # Decide if this should be a failure or just a warning
-             # raise InfrastructureException(f"E2E check failed: LLM response indicates potential error: {response}")
-
-        # --- Optional: Check Vector Search ---
-        # logger.debug("Performing E2E check: Testing vector search...")
-        # search_results = vector_store.search(test_query, k=1)
-        # logger.debug(f"E2E check: Vector search returned {len(search_results)} results.")
-        # Add validation if needed
-
-        # --- Optional: Check Redis Save/Delete ---
-        # test_session_id = f"startup_check_{uuid.uuid4()}"
-        # redis_key = f"{settings.redis_session_prefix}{test_session_id}" # Use same prefix logic
-        # logger.debug(f"Performing E2E check: Testing Redis save/delete with key {redis_key}...")
-        # try:
-        #     # Use the specific Redis history class
-        #     redis_history = RedisChatMessageHistory(
-        #         session_id=redis_key,
-        #         redis_url=f"redis://{':'+settings.redis_password+'@' if settings.redis_password else ''}{settings.redis_host}:{settings.redis_port}/{settings.redis_db}",
-        #         ttl=60 # Short TTL for test key
-        #     )
-        #     await redis_history.aadd_messages([HumanMessage(content=test_query), AIMessage(content=response)])
-        #     logger.debug(f"E2E check: Successfully saved test message to Redis key {redis_key}.")
-        #     await redis_history.aclear() # Clean up the test key
-        #     logger.debug(f"E2E check: Successfully cleared test message from Redis key {redis_key}.")
-        # except Exception as redis_err:
-        #      raise InfrastructureException("E2E check failed during Redis test save/delete") from redis_err
-        # finally:
-        #     # Ensure cleanup happens even if validation fails later
-        #     # This requires a direct redis client usually
-        #     # test_client = redis.Redis(...)
-        #     # test_client.delete(redis_key)
+             raise InfrastructureException(f"E2E check failed: LLM response indicates potential error: {response}")
 
         logger.debug("E2E check basic validation passed.")
 
     except Exception as e:
         logger.error(f"E2E check failed during execution: {e}", exc_info=True)
-        # raise InfrastructureException(f"E2E check failed: {e}") from e
+        raise InfrastructureException(f"E2E check failed: {e}") from e
 
 
 # --- Orchestrator Function ---

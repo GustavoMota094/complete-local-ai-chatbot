@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     """
     # --- Logging Configuration ---
     log_level: str = os.getenv("LOG_LEVEL", "INFO").upper()
-    # log_file_path: str = os.getenv("LOG_FILE_PATH", "chatbot_service.log") # Optional: For file logging
+    # log_file_path: str = os.getenv("LOG_FILE_PATH", "chatbot_service.log")
 
     # --- Startup Check Configuration ---
     startup_check_retry_attempts: int = int(os.getenv("STARTUP_CHECK_RETRY_ATTEMPTS", 5))
@@ -23,13 +23,10 @@ class Settings(BaseSettings):
     # --- Ollama/ Main LLM Configuration ---
     ollama_base_url: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
     ollama_model: str = os.getenv("OLLAMA_MODEL", "llama3")
-    system_message: str = os.getenv("SYSTEM_MESSAGE", "Voce e um assistente de suporte TI e deve ajudar solicitantes usando sua base de conhecimento e os documentos fornecidos.")
     template_file_path: Path = Path(os.getenv("TEMPLATE_FILE_PATH", "./templates/ollama_prompt_template.txt"))
 
     # --- Intent Classification Configuration ---
     ollama_intent_model: str = os.getenv("OLLAMA_INTENT_MODEL", "llama3")
-    intent_system_message: str = os.getenv("INTENT_SYSTEM_MESSAGE", "Voce e um classificador de intencao de suporte TI. Classifique a pergunta do usuario em uma das seguintes categorias:")
-    intent_categories: str = os.getenv("INTENT_CATEGORIES", "Pergunta Geral, Saudacao e Despedida.")
     intent_template_file_path: Path = Path(os.getenv("INTENT_TEMPLATE_FILE_PATH", "./templates/intent_prompt_template.txt"))
     default_intent: str = os.getenv("DEFAULT_INTENT", "Duvidas Gerais")
 
@@ -40,13 +37,12 @@ class Settings(BaseSettings):
     chroma_collection_name: str = os.getenv("CHROMA_COLLECTION_NAME", "rag_documents")
 
     # --- RAG Configuration ---
-    rag_chunk_size: int = int(os.getenv("RAG_CHUNK_SIZE", 1000)) # Target chunk size for splitting
-    rag_chunk_overlap: int = int(os.getenv("RAG_CHUNK_OVERLAP", 150)) # Overlap between chunks
-    rag_search_k: int = int(os.getenv("RAG_SEARCH_K", 5)) # Number of relevant documents to retrieve from vector store
-    rag_relevance_score_threshold: float = float(os.getenv("RAG_RELEVANCE_SCORE_THRESHOLD", 0.70)) # (0.0 to 1.0)
+    rag_chunk_size: int = int(os.getenv("RAG_CHUNK_SIZE", 1000))
+    rag_chunk_overlap: int = int(os.getenv("RAG_CHUNK_OVERLAP", 150))
+    rag_search_k: int = int(os.getenv("RAG_SEARCH_K", 5))
+    rag_relevance_score_threshold: float = float(os.getenv("RAG_RELEVANCE_SCORE_THRESHOLD", 0.70))
 
     # --- Memory Configuration ---
-    # Number of past interactions to keep in conversation memory
     memory_window_size: int = int(os.getenv("MEMORY_WINDOW_SIZE", 5))
 
     # --- Redis Chat History Configuration ---

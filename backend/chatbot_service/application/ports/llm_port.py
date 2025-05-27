@@ -5,7 +5,7 @@ class LLMPort(ABC):
     Port defining the interface for Language Model interactions.
     """
     @abstractmethod
-    async def generate_response(self, query: str, context: str, chat_history: str) -> str:
+    async def generate_response(self, query: str, context: str, chat_history: str, intent: str) -> str:
         """
         Generates a text response based on the provided inputs.
 

@@ -83,8 +83,8 @@ class ChatService:
                  raise IndexNotReadyError("Vector store is not initialized properly.")
 
             # --- Intent Classification ---
-            detected_intent = await self.intent_client.classify_intent(query)
-            logger.info(f"Detected intent for query '{query[:50]}...': {detected_intent} (Session: {session_id})")
+            intent = await self.intent_client.classify_intent(query)
+            logger.info(f"Detected intent for query '{query[:50]}...': {intent} (Session: {session_id})")
 
             # --- Memory Management ---
             memory = self._get_chat_memory(session_id)
@@ -151,7 +151,8 @@ class ChatService:
             response = await self.llm_client.generate_response(
                 query=query,
                 context=context_string,
-                chat_history=chat_history_string
+                chat_history=chat_history_string,
+                intent=intent
             )
             logger.info(f"LLM generated response successfully for session {session_id}.")
             logger.debug(f"LLM Response: {response}")

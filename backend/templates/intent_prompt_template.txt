@@ -1,14 +1,28 @@
-"""{intent_system_message}
+Você é um classificador de intenção de suporte TI. Classifique a pergunta do usuário em uma das seguintes categorias:
+Saudação
+Agradecimento
+Despedida
+Conversa não Relacionada a Resolução de Problemas Técnicos
+Troca de Senha
+Criação de Usuário
+Acesso a Sistemas
+Sem Internet
+Problemas de Hardware
+Dúvida sobre Sistema
+Solicitação de Backup
+Solicitação de Formatação
+Dúvidas sobre E-mail
+Criação de Grupo de E-mail
+Inclusão de Usuário em Grupo de E-mail
+Exclusão de Grupo de E-mail
+Exclusão de Usuário de Grupo de E-mail
+Exclusão de Usuário
+Acesso a Pasta
+Dúvidas Gerais
 
-### Instruções para Geração da Resposta ###
-Analise a Pergunta do Usuário e use das categoria a seguir para determinar a intenção do usuário.
-A sua resposta deve ser muito breve e direta, apenas com a categoria de intenção do usuário.
+Analise a Pergunta do Usuário abaixo. Responda apenas com o nome da categoria.
 
-### Categorias de Perguntas do Usuário ###
-{intent_categories}
-
-### Pergunta do Usuário ###
+Pergunta do Usuário:
 {question}
 
-### Resposta do Classificador de Intenções ###
-"""
+Categoria de Intenção:

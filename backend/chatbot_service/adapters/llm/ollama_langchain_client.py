@@ -49,18 +49,17 @@ class OllamaLangchainClient(LLMPort):
 
             # --- Create PromptTemplate using the loaded string ---
             self.prompt_template = PromptTemplate(
-                input_variables=["system_message", "chat_history", "context", "question"],
+                input_variables=["chat_history", "context", "question", "intent"],
                 template=loaded_template_string
             )
 
             # --- Define the Chain using LCEL ---
-            # This defines the flow of data into the prompt template and then to the LLM
             self.chain = (
                 {
                     "context": operator.itemgetter("context"),
                     "question": operator.itemgetter("question"),
                     "chat_history": operator.itemgetter("chat_history"),
-                    "system_message": lambda x: settings.system_message
+                    "intent": operator.itemgetter("intent")
                 }
                 | self.prompt_template
                 | self.llm
@@ -72,7 +71,7 @@ class OllamaLangchainClient(LLMPort):
              logger.exception("Failed to initialize Ollama/Langchain client")
              raise InfrastructureException(f"Failed to initialize Ollama/Langchain client: {e}") from e
 
-    async def generate_response(self, query: str, context: str, chat_history: str) -> str:
+    async def generate_response(self, query: str, context: str, chat_history: str, intent: str) -> str:
         """
         Generates a response using the configured LLM chain.
 
@@ -91,8 +90,9 @@ class OllamaLangchainClient(LLMPort):
             # Prepare the input dictionary for the chain invocation
             chain_input = {
                 "question": query,
-                "context": context if context else "No additional context provided.",
-                "chat_history": chat_history if chat_history else "No previous conversation history."
+                "context": context if context else "Sem contexto.",
+                "chat_history": chat_history if chat_history else "Sem mensagens previas.",
+                "intent": intent if intent else "Duvida geral."
             }
             logger.debug(f"Invoking LLM chain with input keys: {list(chain_input.keys())}")
             response = await self.chain.ainvoke(chain_input)

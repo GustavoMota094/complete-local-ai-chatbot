@@ -16,10 +16,11 @@
 3.  **Create and activate a Python virtual environment:**
     ```bash
     python -m venv .venv
-    source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+    source .venv/bin/activate
+    On Windows: .venv\Scripts\activate
     ```
 
-4.  **Install PyTorch separately (IMPORTANT):**
+4.  **Install PyTorch separately:**
     This project requires a specific build of PyTorch. Install it using the following command (this example is for CUDA 12.8, adjust if your environment differs):
     ```bash
     pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
@@ -36,4 +37,10 @@
     ```bash
     cp .env.example .env
     # Now edit .env with your details
+    ```
+
+7. **Start up the frontend:**
+    Open a new terminal and run the following command:
+    ```bash
+    python -m http.server 8080
     ```
