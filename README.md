@@ -40,11 +40,11 @@
     ```
 
 7. **Start up the frontend and backend:**
-    Run the following command:
+    Run the following command on the backend directory:
     ```bash
     uvicorn chatbot_service.adapters.api.main:app --reload
     ```
-    Open a new terminal and run the following command:
+    Open a new terminal and run the following command on the frontend directory:
     ```bash
     python -m http.server 8080
     ```
