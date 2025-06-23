@@ -39,7 +39,11 @@
     # Now edit .env with your details
     ```
 
-7. **Start up the frontend:**
+7. **Start up the frontend and backend:**
+    Run the following command:
+    ```bash
+    uvicorn chatbot_service.adapters.api.main:app --reload
+    ```
     Open a new terminal and run the following command:
     ```bash
     python -m http.server 8080

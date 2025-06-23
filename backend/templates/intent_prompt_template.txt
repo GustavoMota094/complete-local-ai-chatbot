@@ -19,6 +19,10 @@ Exclusão de Usuário de Grupo de E-mail
 Exclusão de Usuário
 Acesso a Pasta
 Dúvidas Gerais
+Relatar Problema no Sistema
+Solicitacão de Software
+Solicitacão de Hardware
+Problema na Rede Interna
 
 Analise a Pergunta do Usuário abaixo. Responda apenas com o nome da categoria.
 
